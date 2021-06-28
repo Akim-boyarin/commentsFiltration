@@ -1,7 +1,6 @@
-# Фильтрация комментариев
+# Comments filtration
+This application execute [API](https://jsonplaceholder.typicode.com/comments) request and get comments as response. After this it render this comments in page as a table. Also, there is a system of filtration by different properties.
 
-Данное приложение осуществляет запрос по [API](https://jsonplaceholder.typicode.com/comments) и получает ответом комментарии, после чего отображает их в табличном виде на странице. Также присутствует система фильтрации комментариев по указанному полю.
+Realaized on *JavaScript* / *Bootstrap* stack.
 
-Реализовано на стеке *JavaScript* / *Bootstrap*.
-
-Используемое API: `https://jsonplaceholder.typicode.com/comments`.
+This API: `https://jsonplaceholder.typicode.com/comments`.
