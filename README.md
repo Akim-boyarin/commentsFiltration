@@ -1,5 +1,5 @@
 # Comments filtration
-This application execute [API](https://jsonplaceholder.typicode.com/comments) request and get comments as response. After this it render this comments in page as a table. Also, there is a system of filtration by different properties.
+This application execute API request and get comments as response. After this it render this comments in page as a table. Also, there is a system of filtration by different properties.
 
 Realaized on *JavaScript* / *Bootstrap* stack.
 
