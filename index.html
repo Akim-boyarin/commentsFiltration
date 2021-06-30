@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Комментарии</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> 
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div id="app"></div>
+    
+
+    <script>
+        async function createComments(url) {
+            // Получение данных
+            let commentsData = await fetch(url)
+                .then(result => result.json())
+                .catch(error => console.log(error));
+
+            commentsData.length = 100;
+
+            let mainBlock = document.querySelector("#app");
+            
+            // Заголовок и раздел фильтрации
+            mainBlock.innerHTML += `
+                <h1 class="title">Список комментариев</h1>
+                <div class="filtration-block">
+                    <div class="first-part">
+                        <p class="text">Фильтровать значения по</p>
+                        <div class="filtered-values">
+                            <select class="values-list"></select>
+                        </div>
+                    </div>
+                    <div class="second-part">
+                        <input class="filter-field" type="text" placeholder="Значение...">
+                    </div>
+                </div>
+            `;
+
+            // раскрывающийся список для фильтрации
+            let select = mainBlock.querySelector(".values-list");
+
+            let commentDataCategories = Object.keys(commentsData[0]);
+            commentDataCategories.forEach(category => {
+                let contentValue;
+                let selectAttr = "";
+
+                switch(category) {
+                    case "postId":
+                        contentValue = "postId";
+                        break;
+                    case "id":
+                        contentValue = "id";
+                        break;
+                    case "name":
+                        contentValue = "имени";
+                        break;
+                    case "email":
+                        contentValue = "email";
+                        selectAttr = "selected";
+                        break;
+                    case "body":
+                        contentValue = "тексту";
+                        break;
+                }
+
+                let option = `<option class="filtered-category" value="${category}" ${selectAttr}>${contentValue}</option>`;
+                select.innerHTML += option;
+            });
+
+            // Таблица, отрисовка
+            let table = document.createElement("table");
+            table.classList.add("table");
+            table.classList.add("table-striped");
+
+            let thead = document.createElement("thead");
+            thead.classList.add("thead-dark");
+            thead.innerHTML += `
+                <tr class="table-row table-titles">
+                    <th class="table-point table-title">id</th>
+                    <th class="table-point table-title">postId</th>
+                    <th class="table-point table-title">name</th>
+                    <th class="table-point table-title">body</th>
+                    <th class="table-point table-title">email</th>
+                </tr>
+            `;
+            table.append(thead);
+
+            // контент таблицы
+            let tbody = createTBody(commentsData);
+            table.append(tbody);
+
+            mainBlock.append(table);
+
+            // Фильтрация
+            let filterField = mainBlock.querySelector(".filter-field");
+            
+            filterField.oninput = () => {
+                let currentFieldValue = filterField.value;
+                let currentSelectValue = select.value;
+
+                if (areOnlyManySpaces(currentFieldValue)) {
+                    currentFieldValue = " ";
+                }
+
+                let commentDataFilterd = commentsData.filter(comment => {
+                    let areNumericalCategories = ["postId", "id"].includes(currentSelectValue);
+
+                    if (areNumericalCategories) {
+                        return String(comment[currentSelectValue]) === currentFieldValue;
+                    } else {
+                        return comment[currentSelectValue].includes(currentFieldValue);
+                    }
+                });
+
+                if (!currentFieldValue) {
+                    commentDataFilterd = commentsData;
+                }
+
+                // Отрисовка тела таблицы
+                let currentTBody = table.querySelector("tbody");
+                
+                let newTBody = createTBody(commentDataFilterd);
+                currentTBody.replaceWith(newTBody);
+            };
+
+            select.oninput = () => {
+                filterField.value = "";
+
+                // Отрисовка тела таблицы
+                let currentTBody = table.querySelector("tbody");
+
+                let newTBody = createTBody(commentsData);
+                currentTBody.replaceWith(newTBody);
+            };
+        }
+    </script>
+    <script>
+        // Функции
+        function createTBody(data) {
+            let tbody = document.createElement("tbody");
+            tbody.classList.add("tbody");
+
+            // ячейки таблицы
+            data.forEach(comment => {
+                let tableRow = `
+                    <tr class="table-row">
+                        <td class="table-point table-id">${comment.id}</td>
+                        <td class="table-point table-post-id">${comment.postId}</td>
+                        <td class="table-point table-name">${comment.name}</td>
+                        <td class="table-point table-body">${comment.body}</td>
+                        <td class="table-point table-email">${comment.email}</td>
+                    </tr>
+                `;
+                
+                tbody.innerHTML += tableRow;
+            });
+            
+            return tbody;
+        }
+
+        function areOnlyManySpaces(string) {
+            if (typeof string !== "string") return;
+            if (string.length < 2) return false;
+
+            const SPACE = " ";
+
+            for (let i = 0; i < string.length; i++) {
+                if (string[i] !== SPACE) return false;
+            }
+
+            return true;
+        }
+    </script>
+    <script>
+        let url = "https://jsonplaceholder.typicode.com/comments";
+        createComments(url);
+    </script>
+</body>
+</html>
+
+

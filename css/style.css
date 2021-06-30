@@ -1,0 +1,37 @@
+.title,
+.filtration-block {
+    margin-left: 5px;
+}
+
+.first-part {
+    display: flex;
+    flex-direction: row;
+}
+
+.filtered-values {
+    margin-left: 5px;
+}
+
+.table {
+    margin-top: 20px;
+}
+
+.table-point:nth-child(1),
+.table-point:nth-child(2) {
+    text-align: center;
+}
+
+.arrow-buttons {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.arrow-buttons button:nth-child(1) {
+    margin-right: 5px;
+}
+
+.arrow-buttons button:nth-child(2) {
+    margin-left: 5px;
+}
